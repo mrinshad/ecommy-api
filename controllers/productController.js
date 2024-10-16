@@ -16,6 +16,19 @@ exports.insertProduct = (req, res) => {
     });
 };
 
+exports.getApprovedProducts = (req,res) =>{
+    const sql = 'SELECT * FROM products WHERE status = "approved"'
+
+    db.query(sql,function(err,results,fields){
+        if(err){
+            res.status(500).json({ error: "Failed to get product" });
+        }else{
+            res.status(200).json(results)
+        }
+        // console.log(results)
+    });
+}
+
 exports.getProducts = (req,res) =>{
     const sql = 'SELECT * FROM products'
 
@@ -28,3 +41,30 @@ exports.getProducts = (req,res) =>{
         // console.log(results)
     });
 }
+
+exports.getapproveProduct = (req, res) => {
+    const sql = 'UPDATE products SET status="approved" WHERE id=?';
+
+    // Ensure req.body.id is passed as a parameter to the query
+    db.query(sql, [req.body.id], function(err, results, fields) {
+        if (err) {
+            res.status(500).json({ error: "Failed to approve product", err });
+        } else {
+            res.status(200).json({ message: "Product approved successfully", results });
+        }
+    });
+};
+
+exports.getRejectProduct = (req, res) => {
+    const sql = 'UPDATE products SET status="rejected" WHERE id=?';
+
+    // Ensure req.body.id is passed as a parameter to the query
+    db.query(sql, [req.body.id], function(err, results, fields) {
+        if (err) {
+            res.status(500).json({ error: "Failed to reject product", err });
+        } else {
+            res.status(200).json({ message: "Product rejected successfully", results });
+        }
+    });
+};
+
